@@ -1,0 +1,43 @@
+# =============================================================
+# LAMMPS input template for lammps-ff-fit
+# =============================================================
+# Three variables are ALWAYS injected by the optimizer before
+# this file is executed.  Do NOT define them here:
+#
+#   variable harmonic  string  'T' or 'F'
+#   variable maxiter   equal   N        (0 = single point)
+#   variable datafile  string  'structure.lmp'
+# =============================================================
+
+units       metal
+atom_style  charge
+boundary    p p p
+atom_modify sort 0 0.0
+box tilt    small
+
+# Read structure data
+read_data   ${datafile}
+
+# Include force field parameters
+include     potential.inp
+
+# ---------- Minimisation settings ----------
+variable etol    equal  1.0e-10
+variable ftol    equal  1.0e-8
+variable maxeval equal  10000
+variable vmax    equal  0.001
+variable ptarget equal  0.0
+
+thermo      10
+thermo_style custom step pe etotal press lx
+
+min_style cg
+minimize ${etol} ${ftol} ${maxiter} ${maxeval}
+
+# Relax the box (isotropic) together with the atoms.
+# Runs only for can_relax: true base structures (maxiter > 0);
+# single-point evaluations (maxiter == 0) skip this block.
+if "${maxiter} > 0" then                                       &
+    "fix relax all box/relax iso ${ptarget} vmax ${vmax}"     &
+    "minimize ${etol} ${ftol} ${maxiter} ${maxeval}"           &
+    "unfix relax"

@@ -1,0 +1,64 @@
+# ================================================================
+# Force field parameters for LiMn1.5Ni0.5O4 spinel
+# Managed by lammps-ff-fit
+# ================================================================
+# Potential: LJ/cut + coul/long (Ewald)
+#
+# Atom types:
+#   1=Li   2=Ni   3=Mn   4=O1   5=O2
+# ================================================================
+
+# ----- Atom type indices -----
+variable  Li   equal  1
+variable  Ni  equal  2
+variable  Mn  equal  3
+variable  O1   equal  4
+variable  O2   equal  5
+
+# ----- Masses (g/mol) -----
+mass ${Li}    6.9400000
+mass ${Ni}  58.6900000
+mass ${Mn}  54.9400000
+mass ${O1}   16.0000000
+mass ${O2}   16.0000000
+
+# ----- Fixed charges (e) -----
+set type ${Li}   charge   0.76227974
+set type ${Ni}  charge   1.26793131
+set type ${Mn}  charge   1.54786528
+set type ${O1}   charge  -0.88300788
+set type ${O2}   charge  -0.94501181
+
+# ----- Pair style (harmonic flag injected by optimizer) -----
+if "${harmonic} == T" then                                                    &
+    "pair_style hybrid/overlay coul/long 12.5 lj/cut 12.5 harmonic/cut"     &
+    "kspace_style ewald 1.0e-12"                                              &
+    "pair_coeff * * coul/long"                                                &
+    "pair_coeff ${Mn} ${O1} harmonic/cut 20.000000 2.000000"               &
+    "pair_coeff ${Mn} ${O2} harmonic/cut 20.000000 2.000000"               &
+    "pair_coeff ${Ni} ${O2} harmonic/cut 20.000000 2.000000"               &
+else                                                                          &
+    "pair_style hybrid/overlay coul/long 12.5 lj/cut 12.5"                  &
+    "kspace_style ewald 1.0e-12"                                              &
+    "pair_coeff * * coul/long"
+
+# ----- LJ self-interactions -----
+pair_coeff ${Li}   ${Li}   lj/cut  8.4924000000e-06 4.4368747996  12.5
+pair_coeff ${Ni}  ${Ni}  lj/cut  8.4924000000e-06 4.4368747996  12.5
+pair_coeff ${Mn}  ${Mn}  lj/cut  8.4924000000e-06 4.4368747996  12.5
+pair_coeff ${O1}   ${O1}   lj/cut  4.2745500000e-03 3.2874967527  12.5
+pair_coeff ${O2}   ${O2}   lj/cut  1.9123200000e-03 3.3713786017  12.5
+
+# ----- LJ cross-interactions — Li1 structure -----
+pair_coeff ${Li}   ${Ni}  lj/cut  8.4924000000e-06 4.4491340561  12.5
+pair_coeff ${Li}   ${Mn}  lj/cut  1.5970000000e-07 3.8296530023  12.5
+pair_coeff ${Ni}  ${Mn}  lj/cut  6.6030000000e-07 3.8301508592  12.5
+pair_coeff ${Li}   ${O1}   lj/cut  1.5868000000e-04 3.0586533983  12.5
+pair_coeff ${Li}   ${O2}   lj/cut  1.8839100000e-04 3.0477900848  12.5
+pair_coeff ${Ni}  ${O2}   lj/cut  4.3355095227e-05 3.6826211663  12.5
+pair_coeff ${Mn}  ${O1}   lj/cut  3.4389050666e-05 3.4213296303  12.5
+pair_coeff ${Mn}  ${O2}   lj/cut  4.5904879973e-05 3.4003037842  12.5
+pair_coeff ${O1}   ${O2}   lj/cut  2.6760300000e-03 3.3385264518  12.5
+
+pair_modify table 0
+pair_modify shift yes

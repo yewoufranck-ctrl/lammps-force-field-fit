@@ -1,0 +1,124 @@
+# ================================================================
+# Example 04 — Fit atomic charges with electroneutrality constraint
+# System: LiMn1.5Ni0.5O4 spinel
+# ================================================================
+# IMPORTANT: charge fitting with electroneutral_with requires
+# optimizer.method: trust-constr (or SLSQP).
+# The code switches automatically, but it is set explicitly here.
+#
+# The electroneutrality condition for the Li1 unit cell is:
+#   8*q(Li) + 4*q(Ni) + 12*q(Mn) + 8*q(O1) + 24*q(O2) = 0
+# q(Li) and q(Mn) are kept fixed; q(Ni), q(O1), q(O2) are fitted.
+# ================================================================
+
+name: "LiMn1.5Ni0.5O4"
+
+lammps:
+  input_file:     "lammps.in"
+  potential_file: "potential.inp"
+  data_file:      "structure.lmp"
+
+species:
+  - symbol: Li  
+    mass: 6.940
+    element: Li
+  - symbol: Ni  
+    mass: 58.690
+    element: Ni
+  - symbol: Mn  
+    mass: 54.940
+    element: Mn
+  - symbol: O1  
+    mass: 16.000
+    element: O
+  - symbol: O2  
+    mass: 16.000
+    element: O
+
+potential:
+  lj:       true
+  coulomb:  true
+  harmonic: false
+  cutoff_lj:      12.5
+  cutoff_coulomb: 12.5
+
+structures:
+
+  - name:      "Li1"
+    directory: "base_Li1"
+    role:      "base"
+    can_relax: false
+    reference:
+      energy:  -402.26441842
+      lattice:    8.206762
+    weights:
+      energy:     1.0
+      lattice:  500.0
+      forces:     1.0
+      coordinates: 1.0
+
+  - name:      "replica_01"
+    directory: "replica_01"
+    role:      "replica"
+    base:      "Li1"
+    reference:
+      energy:  -401.21424865
+    weights:
+      energy:  1.0
+      forces:  1.0
+
+  - name:      "replica_02"
+    directory: "replica_02"
+    role:      "replica"
+    base:      "Li1"
+    reference:
+      energy:  -400.46365967
+    weights:
+      energy:  1.0
+      forces:  1.0
+
+fitting:
+
+  shift:
+    fit:    true
+    bounds: [-500.0, 500.0]
+
+  # LJ pairs also fitted alongside charges
+  lj_pairs:
+
+    - types:       [Mn, O1]
+      fit_epsilon: true
+      fit_sigma:   false
+      bounds:
+        epsilon: [1.0e-7, 1.0e-1]
+
+    - types:       [Mn, O2]
+      fit_epsilon: true
+      fit_sigma:   false
+      bounds:
+        epsilon: [1.0e-7, 1.0e-1]
+
+  charges:
+
+    - type:   Ni
+      fit:    true
+      bounds: [0.8, 2.0]
+      electroneutral_with: "Li1"   # enforce charge neutrality
+
+    - type:   O1
+      fit:    true
+      bounds: [-2.0, -0.2]
+      electroneutral_with: "Li1"
+
+    - type:   O2
+      fit:    true
+      bounds: [-2.0, -0.2]
+      electroneutral_with: "Li1"
+
+  optimizer:
+    method:          "trust-constr"   
+    max_iter:        2000
+    tolerance:       1.0e-8
+    save_every:      20
+    perturb_initial: 0.0
+    relax_maxiter:   500            

@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Fit outputs
+fit_results/
+Fit.log
+shift_fit.txt
+log
+log.lammps
+Potential.inp
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
