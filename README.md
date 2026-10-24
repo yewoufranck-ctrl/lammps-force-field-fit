@@ -315,6 +315,30 @@ The checkpoint frequency is controlled by `save_every` in the `optimizer` sectio
 If the user modifies the fitting parameters (add/remove a pair, change which charges are fitted, …) the saved checkpoint will have a different parameter map.
 The code detects this mismatch, prints a warning, and falls back to the initial values from `potential.inp` -- no manual cleanup needed.
 
+## Citation
+
+If you use this code in your work, please cite:
+
+> F. J. Kakdeu Yewou, E. Mangaud, A. Gassama, N. Emery, C. Léonard, A. O. Mitrushchenkov,
+> *Theoretical study of Li diffusion in ordered LiMn1.5Ni0.5O4 cathode material*,
+> Computational Materials Science **274**, 115019 (2026).
+> [https://doi.org/10.1016/j.commatsci.2026.115019](https://doi.org/10.1016/j.commatsci.2026.115019)
+
+```bibtex
+@article{YEWOU2026115019,
+title = {Theoretical study of Li diffusion in ordered LiMn1.5Ni0.5O4 cathode material},
+journal = {Computational Materials Science},
+volume = {274},
+pages = {115019},
+year = {2026},
+issn = {0927-0256},
+doi = {https://doi.org/10.1016/j.commatsci.2026.115019},
+url = {https://www.sciencedirect.com/science/article/pii/S0927025626005380},
+author = {Franck Junior Kakdeu Yewou and Etienne Mangaud and Adama Gassama and Nicolas Emery and Céline Léonard and Alexander O. Mitrushchenkov},
+keywords = {Force field, Cathode material, Lithium diffusion, Lithium-ion batteries, Molecular dynamics}
+}
+```
+
 ## License
 
 MIT
